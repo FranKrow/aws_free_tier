@@ -6,7 +6,22 @@ Este documento detalla el paso a paso de la infraestructura como código (IaC) d
 
 ## 1. Diagrama de Arquitectura del Sistema
 
-![](architecture.png)
+```mermaid
+graph TD
+    Client([Cliente / Usuario]) -->|HTTP Request| APIGW[API Gateway v2 HTTP<br/>my-api-gateway-lambda]
+    APIGW -->|AWS_PROXY Integration| Lambda[AWS Lambda<br/>my_lambda_function<br/>Python 3.9]
+    Lambda -->|Escritura de Logs| CW[(Amazon CloudWatch<br/>Logs)]
+    Lambda -.->|Integración opcional| DDB[(DynamoDB Table<br/>my-dynamodb-table)]
+    Lambda -.->|Integración opcional| SQS([SQS Queue<br/>my-sqs-queue])
+
+    subgraph AWS Free Tier Architecture
+        APIGW
+        Lambda
+        CW
+        DDB
+        SQS
+    end
+```
 
 ---
 
